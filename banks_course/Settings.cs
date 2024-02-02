@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace banks_course;
 
 public static class Settings
@@ -8,4 +10,10 @@ public static class Settings
         "https://www.cnb.cz/en/financial_markets/foreign_exchange_market/exchange_rate_fixing/daily.txt?date=";
 
     public const string EurExchangeRateBaseLink = "https://api.frankfurter.app/";
+
+    public static string GetStorageFolderPath()
+    {
+        var executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        return Path.Combine(executableLocation, "..", "..", "..", "storage");
+    }
 }

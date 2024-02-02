@@ -37,4 +37,10 @@ public abstract class BaseCurrency : ICurrency
             _exchangeRates.Add(rate.Key, rate.Value);
         }
     }
+
+    public Dictionary<string, double> GetExchangeRates()
+    {
+        return _exchangeRates;
+    }
+    
 }

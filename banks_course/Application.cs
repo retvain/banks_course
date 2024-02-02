@@ -1,6 +1,7 @@
 using banks_course.Entities.Contracts;
 using banks_course.Entities.Currency.Factories;
 using banks_course.Exceptions;
+using banks_course.Processors.CurrencyFileSystemProcessors;
 using banks_course.Processors.CurrencyParserProcessors;
 using banks_course.Services.Validators;
 
@@ -38,7 +39,11 @@ public class Application
 
     private void Save(List<ICurrency> currencies)
     {
-        // todo implement
+        var currencySaver = new CurrencyFileSaveProcessor();
+        foreach (var currency in currencies)
+        {
+            currencySaver.SaveCurrencyToExcel(currency);   
+        }
     }
 
     private DateTime GetData()
