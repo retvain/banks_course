@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Text;
-using banks_course;
-using Newtonsoft.Json;
+﻿using banks_course;
 
 class Program
 {
@@ -19,5 +14,4 @@ class Program
         var application = new Application();
         application.Run();
     }
-
 }

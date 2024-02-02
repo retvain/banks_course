@@ -10,12 +10,19 @@ public class Application
 {
     public void Run()
     {
-        DateTime date = GetData();
-        var currencies = InitCurrencyEntity(date: date);
+        try
+        {
+            var date = GetData();
+            var currencies = InitCurrencyEntity(date: date);
 
-        Parse(currencies);
-
-        // todo save to file
+            Parse(currencies);
+            Save(currencies);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            throw;
+        }
     }
 
     private List<ICurrency> InitCurrencyEntity(DateTime date)
@@ -27,6 +34,11 @@ public class Application
     {
         var parser = new CurrencyParserProcessor();
         parser.Parse(currencies);
+    }
+
+    private void Save(List<ICurrency> currencies)
+    {
+        // todo implement
     }
 
     private DateTime GetData()

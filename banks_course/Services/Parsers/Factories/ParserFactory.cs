@@ -13,7 +13,7 @@ public static class ParserFactory
         {
             Rub => new RubExchangeRateParser(),
             Czk => new CzkExchangeRateParser(),
-            Eur => new CzkExchangeRateParser(),
+            Eur => new EurExchangeRateParser(),
             _ => throw FactoryException.BecauseParserNotFound(currencyEntity)
         };
     }

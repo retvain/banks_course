@@ -1,3 +1,4 @@
+using banks_course.DTOs.Common;
 using banks_course.Entities.Contracts;
 
 namespace banks_course.Entities.Currency;
@@ -9,6 +10,8 @@ public abstract class BaseCurrency : ICurrency
     private readonly string _exchangeRateLink;
 
     private readonly DateTime _date;
+    
+    private Dictionary<string, double> _exchangeRates;
 
     protected BaseCurrency(DateTime date)
     {
@@ -24,5 +27,14 @@ public abstract class BaseCurrency : ICurrency
     public DateTime GetDate()
     {
         return _date;
+    }
+
+    public void SetExchangeRates(BaseDto dto)
+    {
+        _exchangeRates = new Dictionary<string, double>();
+        foreach (var rate in dto.ExchangeRates)
+        {
+            _exchangeRates.Add(rate.Key, rate.Value);
+        }
     }
 }

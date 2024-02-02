@@ -4,5 +4,5 @@ namespace banks_course.Services.Contracts;
 
 public interface IExchangeRateParser
 {
-    T Parse<T>(T dto, string url) where T : BaseDto;
+    public void Parse<T>(T dto, string url) where T : BaseDto;
 }
