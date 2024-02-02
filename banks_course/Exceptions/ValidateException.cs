@@ -8,13 +8,13 @@ public class ValidateException : Exception
     
     public static ValidateException BecauseDateIsNotValid(string date)
     {
-        string errorMessage = $"Date - ({date}) is not valid. Please insert date in format YYYY-MM-DD";
+        string errorMessage = $"Date - ({date}) is not valid. Insert date in YYYY-MM-DD format:";
         return new ValidateException(errorMessage);
     }
     
     public static ValidateException BecauseDateIsEmpty()
     {
-        string errorMessage = $"Date is empty. Please insert date in format YYYY-MM-DD";
+        string errorMessage = $"Date is empty. Insert date in YYYY-MM-DD format:";
         return new ValidateException(errorMessage);
     }
 }
