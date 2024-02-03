@@ -4,5 +4,5 @@ namespace banks_course.Processors.Contracts;
 
 public interface ICurrencyFileSaveProcessor
 {
-    public void SaveCurrencyToExcel(ICurrency currency);
+    public void SaveCurrencyToExcel(ICurrency currency, DateTime date);
 }

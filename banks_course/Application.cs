@@ -1,9 +1,9 @@
+using System.Globalization;
 using banks_course.Entities.Contracts;
 using banks_course.Entities.Currency.Factories;
-using banks_course.Exceptions;
 using banks_course.Processors.CurrencyFileSystemProcessors;
 using banks_course.Processors.CurrencyParserProcessors;
-using banks_course.Services.Validators;
+using Microsoft.Extensions.Configuration;
 
 namespace banks_course;
 
@@ -11,13 +11,20 @@ public class Application
 {
     public void Run()
     {
+        IConfigurationRoot config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+        
+        IConfigurationSection settings = config.GetRequiredSection("ExchangeRateSettings");
+        var v = settings.GetSection("RubExchangeRateBaseLink").Value;
+
         try
         {
-            var date = GetData();
-            var currencies = InitCurrencyEntity(date: date);
+            var date = GetDate();
+            var currencies = InitCurrencyEntity();
 
-            Parse(currencies);
-            Save(currencies);
+            Parse(currencies, date);
+            Save(currencies, date);
         }
         catch (Exception e)
         {
@@ -26,50 +33,44 @@ public class Application
         }
     }
 
-    private List<ICurrency> InitCurrencyEntity(DateTime date)
+    private List<ICurrency> InitCurrencyEntity()
     {
-        return CurrencyFactory.CreateAllCurrencies(date);
+        return CurrencyFactory.CreateAllCurrencies();
     }
 
-    private void Parse(List<ICurrency> currencies)
+    private void Parse(List<ICurrency> currencies, DateTime date)
     {
         var parser = new CurrencyParserProcessor();
-        parser.Parse(currencies);
+        parser.Parse(currencies, date);
     }
 
-    private void Save(List<ICurrency> currencies)
+    private void Save(List<ICurrency> currencies, DateTime date)
     {
         var currencySaver = new CurrencyFileSaveProcessor();
         foreach (var currency in currencies)
         {
-            currencySaver.SaveCurrencyToExcel(currency);   
+            currencySaver.SaveCurrencyToExcel(currency, date);
         }
     }
 
-    private DateTime GetData()
+    private DateTime GetDate()
     {
-        var validator = new DateValidator();
+        DateTime date;
+        bool isValidDate;
 
-        string? inputDate;
-        Console.Write("Insert date in YYYY-MM-DD format: \n");
         do
         {
-            inputDate = Console.ReadLine();
+            Console.Write("Insert date in YYYY-MM-DD format: \n");
+            string? inputDate = Console.ReadLine();
 
-            try
+            isValidDate = DateTime.TryParseExact(inputDate, "yyyy-MM-dd", null, DateTimeStyles.None, out date);
+
+            if (!isValidDate)
             {
-                validator.Validate(inputDate);
-                break;
+                Console.WriteLine("Wrong format. Please, insert date in YYYY-MM-DD format: ");
             }
-            catch (ValidateException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-        } while (true);
+        } while (!isValidDate);
 
-        DateTime.TryParseExact(inputDate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None,
-            out DateTime result);
-
-        return result;
+        return date;
     }
 }

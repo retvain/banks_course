@@ -8,13 +8,13 @@ namespace banks_course.Processors.CurrencyParserProcessors;
 
 public class CurrencyParserProcessor : ICurrencyParserProcessor
 {
-    public void Parse(List<ICurrency> currencies)
+    public void Parse(List<ICurrency> currencies, DateTime date)
     {
         foreach (var currency in currencies)
         {
             var parser = ParserFactory.GetParserByEntity(currency);
             var rateDto = CurrencyDtoFactory.GetDtoByEntity(currency);
-            parser.Parse(rateDto, currency.GetExchangeRateSourceUrl());
+            parser.Parse(date);
 
             EnrichEntity(currency, rateDto);
             

@@ -2,7 +2,6 @@ using banks_course.Entities.Contracts;
 
 namespace banks_course.Entities.Currency;
 
-public class Czk(DateTime date) : BaseCurrency(date)
+public class Czk : BaseCurrency
 {
-    protected override string ExchangeRateBaseLink => Settings.CzkExchangeRateBaseLink;
 }

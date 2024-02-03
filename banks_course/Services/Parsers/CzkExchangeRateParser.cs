@@ -1,36 +1,37 @@
 using System.Globalization;
 using banks_course.DTOs.Common;
-using banks_course.Exceptions;
+using banks_course.DTOs.CzkDTOs;
 using banks_course.Services.Contracts;
 using banks_course.Services.Parsers.Responses;
 
 namespace banks_course.Services.Parsers;
 
-public class CzkExchangeRateParser : IExchangeRateParser
+public class CzkExchangeRateParser : BaseParser, IExchangeRateParser
 {
-    public void Parse<T>(T dto, string url) where T : BaseDto
+    public CzkExchangeRateParser()
     {
-        using var client = new HttpClient();
-        string response;
-        try
-        {
-            response = client.GetStringAsync(url).Result;
-        }
-        catch (Exception e)
-        {
-            throw NetworkException.BecauseErrorConnectToUrl(url, e.Message);
-        }
+        SourceUrl = Settings.GetSection("CzkExchangeRateBaseLink").Value;
+    }
+    public BaseDto Parse(DateTime date)
+    {
+        var response = GetResponse(date).GetAwaiter().GetResult();
 
         var rates = ParseTextResponse(response);
-        BuildDtoFromResponse(dto, rates);
+        
+        var dto = BuildDtoFromResponse(rates);
+
+        return dto;
     }
 
-    private void BuildDtoFromResponse(BaseDto dto, List<CzkExchangeRateResponse> rates)
+    private CzkRateDto BuildDtoFromResponse(List<CzkExchangeRateResponse> rates)
     {
+        var dto = new CzkRateDto();
         foreach (var rate in rates)
         {
             dto.ExchangeRates.Add(rate.Code, rate.Rate);
         }
+
+        return dto;
     }
     
     private List<CzkExchangeRateResponse> ParseTextResponse(string response)

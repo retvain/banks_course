@@ -1,19 +1,25 @@
-using System.Reflection;
+using Microsoft.Extensions.Configuration;
 
-namespace banks_course;
-
-public static class Settings
+namespace banks_course
 {
-    public const string RubExchangeRateBaseLink = "https://api.frankfurter.app/";
-
-    public const string CzkExchangeRateBaseLink =
-        "https://www.cnb.cz/en/financial_markets/foreign_exchange_market/exchange_rate_fixing/daily.txt?date=";
-
-    public const string EurExchangeRateBaseLink = "https://api.frankfurter.app/";
-
-    public static string GetStorageFolderPath()
+    public static class Settings
     {
-        var executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        return Path.Combine(executableLocation, "..", "..", "..", "storage");
+        private static readonly Lazy<IConfigurationSection> CachedSettings = new Lazy<IConfigurationSection>(LoadSettings);
+
+        private static IConfigurationSection LoadSettings()
+        {
+            IConfigurationRoot config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var rootSection = config.GetRequiredSection("ExchangeRateSettings");
+
+            return rootSection;
+        }
+
+        public static IConfigurationSection GetSection(string key)
+        {
+            return CachedSettings.Value.GetSection(key);
+        }
     }
 }

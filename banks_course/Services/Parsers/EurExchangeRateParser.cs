@@ -1,29 +1,37 @@
 using banks_course.DTOs.Common;
+using banks_course.DTOs.EurDTOs;
 using banks_course.Services.Contracts;
 using banks_course.Services.Parsers.Responses;
 using Newtonsoft.Json;
 
 namespace banks_course.Services.Parsers;
 
-public class EurExchangeRateParser : IExchangeRateParser
+public class EurExchangeRateParser : BaseParser, IExchangeRateParser
 {
-    public void Parse<T>(T dto, string url) where T : BaseDto
+    public EurExchangeRateParser()
     {
-        using var client = new HttpClient();
-        
-        var response = client.GetStringAsync(url).Result;
+        SourceUrl = Settings.GetSection("EurExchangeRateBaseLink").Value;
+    }
+    
+    public BaseDto Parse(DateTime date)
+    {
+        var response = GetResponse(date).GetAwaiter().GetResult();
 
         var responseModel = JsonConvert.DeserializeObject<EurExchangeRateResponse>(response);
 
-        if (responseModel != null) BuildDtoFromResponse(dto, responseModel);
+        var dto = BuildDtoFromResponse(responseModel);
+
+        return dto;
     }
 
-    private void BuildDtoFromResponse(BaseDto dto, EurExchangeRateResponse responseModel)
+    private EurRateDto BuildDtoFromResponse(EurExchangeRateResponse responseModel)
     {
-        dto.Date = responseModel.Date;
+        var dto = new EurRateDto();
         foreach (var rate in responseModel.Rates)
         {
             dto.ExchangeRates.Add(rate.Key, Math.Round(rate.Value, 4));
         }
+        
+        return dto;
     }
 }

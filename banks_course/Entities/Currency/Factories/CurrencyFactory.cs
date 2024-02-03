@@ -4,13 +4,13 @@ namespace banks_course.Entities.Currency.Factories
 {
     public static class CurrencyFactory
     {
-        public static List<ICurrency> CreateAllCurrencies(DateTime date)
+        public static List<ICurrency> CreateAllCurrencies()
         {
             List<ICurrency> currencies =
             [
-                new Rub(date),
-                new Czk(date),
-                new Eur(date)
+                new Rub(),
+                new Czk(),
+                new Eur()
             ];
 
             return currencies;

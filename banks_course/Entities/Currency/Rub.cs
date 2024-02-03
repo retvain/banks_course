@@ -1,6 +1,5 @@
 namespace banks_course.Entities.Currency;
 
-public class Rub(DateTime date) : BaseCurrency(date)
+public class Rub : BaseCurrency
 {
-    protected override string ExchangeRateBaseLink => Settings.RubExchangeRateBaseLink;
 }
