@@ -1,3 +1,4 @@
+using System.Reflection;
 using banks_course.Entities.Contracts;
 using banks_course.Processors.Contracts;
 using OfficeOpenXml;
@@ -6,7 +7,7 @@ namespace banks_course.Processors.CurrencyFileSystemProcessors;
 
 public class CurrencyFileSaveProcessor : ICurrencyFileSaveProcessor
 {
-    public void SaveCurrencyToExcel(ICurrency currency)
+    public void SaveCurrencyToExcel(ICurrency currency, DateTime date)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         
@@ -14,7 +15,7 @@ public class CurrencyFileSaveProcessor : ICurrencyFileSaveProcessor
         
         var worksheet = package.Workbook.Worksheets.Add("ExchangeRates");
         var row = 2;
-        var stringDate = currency.GetDate().ToString("yyyy-MM-dd");
+        var stringDate = date.ToString("yyyy-MM-dd");
         var currencyName = currency.GetType().Name;
 
         worksheet.Cells[1, 1].Value = "Currency";
@@ -30,7 +31,8 @@ public class CurrencyFileSaveProcessor : ICurrencyFileSaveProcessor
             row++;
         }
 
-        var filePath = Path.Combine(Settings.GetStorageFolderPath(), $"{currencyName}_{stringDate}.xlsx");
+        var rootPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var filePath = Path.Combine(rootPath, "..", "..", "..", Settings.GetSection("RelativeStoragePath").Value, $"{currencyName}_{stringDate}.xlsx"); // todo this is shit
         package.SaveAs(new FileInfo(filePath));
 
         Console.WriteLine($"{currencyName} has been saved to {filePath}");

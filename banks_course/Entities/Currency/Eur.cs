@@ -1,6 +1,5 @@
 namespace banks_course.Entities.Currency;
 
-public class Eur(DateTime date) : BaseCurrency(date)
+public class Eur : BaseCurrency
 {
-    protected override string ExchangeRateBaseLink => Settings.EurExchangeRateBaseLink;
 }

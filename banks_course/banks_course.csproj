@@ -9,7 +9,12 @@
 
     <ItemGroup>
       <PackageReference Include="EPPlus" Version="7.0.8" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="bin\Debug\net8.0\appsettings.json" />
     </ItemGroup>
 
 </Project>
